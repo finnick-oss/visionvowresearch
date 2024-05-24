@@ -21,7 +21,7 @@ const CompletedPage = ({ location }) => {
     const pid = searchParams.get('pid');
     const uid = searchParams.get('uid');
     const status = 'Complete';
-    const completionTime = new Date().toISOString().slice(0, 10);
+    const completionTime = new Date().toLocaleString();
     const currentDateTime = new Date().toISOString().replace(/:/g, '-'); // Replace colons to avoid issues in Firestore ID
 
     if (pid && uid && ipAddress) {
