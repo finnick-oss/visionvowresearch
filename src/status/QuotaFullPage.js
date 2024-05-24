@@ -16,13 +16,30 @@ const QuotaFullPage = ({ location }) => {
       .catch(error => console.log(error));
   }, []);
 
+  const formatDateTime = (date) => {
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Months are zero-indexed
+    const year = date.getFullYear();
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+    const ampm = hours >= 12 ? 'pm' : 'am';
+
+    hours = hours % 12;
+    hours = hours ? hours : 12; // The hour '0' should be '12'
+
+    const strTime = `${hours}:${minutes}:${seconds} ${ampm}`;
+    return `${day}-${month}-${year}, ${strTime}`;
+  };
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const pid = searchParams.get('pid');
     const uid = searchParams.get('uid');
     const status = 'Quotafull';
-    const completionTime = new Date().toLocaleString();
-    const currentDateTime = new Date().toISOString().replace(/:/g, '-'); // Replace colons to avoid issues in Firestore ID
+    const currentDate = new Date();
+    const completionTime = formatDateTime(currentDate);
+    const currentDateTime = currentDate.toISOString().replace(/:/g, '-'); // Replace colons to avoid issues in Firestore ID
 
     if (pid && uid && ipAddress) {
       const newData = {
@@ -30,7 +47,7 @@ const QuotaFullPage = ({ location }) => {
         uid,
         ip: ipAddress,
         status,
-        date:completionTime, // Include completionTime in newData
+        date: completionTime, // Include completionTime in newData
       };
 
       console.log('New Data:', newData);
@@ -48,7 +65,6 @@ const QuotaFullPage = ({ location }) => {
           console.error('Error adding document: ', error);
         }
       };
-      
 
       saveToFirestore();
     }
@@ -56,7 +72,7 @@ const QuotaFullPage = ({ location }) => {
 
   return (
     <div className="complete-page">
-      <h1 className="complete-title">Opps!! QuotaFull</h1>
+      <h1 className="complete-title">Oops!! Quota Full</h1>
       <div className="table-container">
         <div className="table-responsive">
           <table className="table table-bordered table-hover table-sm text-center">
