@@ -17,21 +17,20 @@ const TerminatePage = ({ location }) => {
   }, []);
 
   const formatDateTime = (date) => {
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // Months are zero-indexed
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
     const year = date.getFullYear();
     let hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
     const ampm = hours >= 12 ? 'pm' : 'am';
 
     hours = hours % 12;
     hours = hours ? hours : 12; // The hour '0' should be '12'
 
     const strTime = `${hours}:${minutes}:${seconds} ${ampm}`;
-    return `${year}-${month}-${date}, ${strTime}`;
+    return `${day}-${month}-${year}, ${strTime}`;
   };
-
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const pid = searchParams.get('pid');

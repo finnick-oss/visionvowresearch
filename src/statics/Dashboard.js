@@ -2,11 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { collection, getDocs } from 'firebase/firestore';
+import { and, collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import { FaArrowLeft, FaArrowRight, FaLock } from 'react-icons/fa';
 import './Dashboard.css';
-
 const Dashboard = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -106,10 +105,10 @@ const Dashboard = () => {
     let filtered = data;
 
     if (status) {
-      filtered = filtered.filter(item => item.status.toLowerCase() == status);
+      filtered = filtered.filter(item => item.status.toLowerCase() === status);
     }
     if (pid) {
-      filtered = filtered.filter(item => item.pid == (pid));
+      filtered = filtered.filter(item => item.pid.includes(pid));
     }
     if (uidValue) {
       filtered = filtered.filter(item => item.uid.startsWith(uidValue) || item.uid.endsWith(uidValue));
@@ -118,12 +117,23 @@ const Dashboard = () => {
     const filterByDate = (itemDate, date1, date2) => {
       const parsedItemDate = parseCustomDate(itemDate);
       if (!parsedItemDate) return false;
-      if (date1 && date2) {
-        return ((parsedItemDate.toDateString() >= new Date(date1).toDateString()) && (parsedItemDate.toDateString() <= new Date(date2).toDateString()));
+
+      const date1Obj = date1 ? parseCustomDate(date1) : null;
+      const date2Obj = date2 ? parseCustomDate(date2) : null;
+
+      if (date1Obj && date2Obj) {
+        return (
+          parsedItemDate.getFullYear() >= date1Obj.getFullYear() &&
+          parsedItemDate.getMonth() >= date1Obj.getMonth() &&
+          parsedItemDate.getDate() >= date1Obj.getDate() &&
+          parsedItemDate.getFullYear() <= date2Obj.getFullYear() &&
+          parsedItemDate.getMonth() <= date2Obj.getMonth() &&
+          parsedItemDate.getDate() <= date2Obj.getDate()
+        );
       } else if (date1) {
-        return parsedItemDate.toDateString() == new Date(date1).toDateString();
+        return parsedItemDate.toDateString() === date1Obj.toDateString();
       } else if (date2) {
-        return parsedItemDate.toDateString() == new Date(date2).toDateString();
+        return parsedItemDate.toDateString() === date2Obj.toDateString();
       }
       return true;
     };
