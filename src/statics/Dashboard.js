@@ -11,7 +11,7 @@ const Dashboard = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(100); // Assuming 10 items per page
+  const [itemsPerPage] = useState(100); // Assuming 100 items per page
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [User, setUser] = useState('');
   const [Password, setPassword] = useState('');
@@ -65,36 +65,74 @@ const Dashboard = () => {
     saveAs(blob, fileName);
   };
 
+  const parseCustomDate = (dateString) => {
+    if (!dateString) return null;
+
+    try {
+      if (dateString.includes(', ')) {
+        // Custom format: DD-MM-YYYY, hh:mm:ss AM/PM
+        const [datePart, timePart] = dateString.split(', ');
+        const [day, month, year] = datePart.split('-').map(Number);
+        const [time, period] = timePart.split(' ');
+        let [hours, minutes, seconds] = time.split(':').map(Number);
+
+        if (period.toLowerCase() === 'pm' && hours < 12) {
+          hours += 12;
+        } else if (period.toLowerCase() === 'am' && hours === 12) {
+          hours = 0;
+        }
+
+        return new Date(year, month - 1, day, hours, minutes, seconds);
+      } else if (dateString.includes('-')) {
+        // Format: YYYY-MM-DD
+        const [year, month, day] = dateString.split('-').map(Number);
+        return new Date(year, month - 1, day);
+      }
+      return null;
+    } catch (error) {
+      console.error('Error parsing date:', error);
+      return null;
+    }
+  };
+
   const handleFilter = (e) => {
     e.preventDefault();
-    const pid = e.target.p_id.value;
-    const uidEnds = e.target.u_ide.value;
-    const uidStarts = e.target.u_ids.value;
-    const date = e.target.date.value;
-    const status = e.target.status.value;
+    const pid = e.target.p_id.value.trim();
+    const uidValue = e.target.u_ide.value.trim();
+    const date1 = e.target.date1.value;
+    const date2 = e.target.date2.value;
+    const status = e.target.status.value.trim().toLowerCase();
 
     let filtered = data;
 
     if (status) {
-      filtered = filtered.filter(item => item.status.toLowerCase() === status);
+      filtered = filtered.filter(item => item.status.toLowerCase() == status);
     }
     if (pid) {
-      filtered = filtered.filter(item => item.pid.includes(pid));
+      filtered = filtered.filter(item => item.pid == (pid));
     }
-    if (uidEnds) {
-      filtered = filtered.filter(item => item.uid.endsWith(uidEnds));
+    if (uidValue) {
+      filtered = filtered.filter(item => item.uid.startsWith(uidValue) || item.uid.endsWith(uidValue));
     }
-    if (uidStarts) {
-      filtered = filtered.filter(item => item.uid.startsWith(uidStarts));
-    }
-    if (date) {
-      filtered = filtered.filter(item => item.date === date);
-    }
+
+    const filterByDate = (itemDate, date1, date2) => {
+      const parsedItemDate = parseCustomDate(itemDate);
+      if (!parsedItemDate) return false;
+      if (date1 && date2) {
+        return ((parsedItemDate.toDateString() >= new Date(date1).toDateString()) && (parsedItemDate.toDateString() <= new Date(date2).toDateString()));
+      } else if (date1) {
+        return parsedItemDate.toDateString() == new Date(date1).toDateString();
+      } else if (date2) {
+        return parsedItemDate.toDateString() == new Date(date2).toDateString();
+      }
+      return true;
+    };
+
+    filtered = filtered.filter(item => filterByDate(item.date, date1, date2));
 
     setFilteredData(filtered);
+    console.log(filtered);
     setCurrentPage(1);
-
-  
 
     // Reset the status field
     if (statusRef.current) {
@@ -123,13 +161,13 @@ const Dashboard = () => {
               <input type="text" name="p_id" className="form-control" placeholder="PID" />
             </div>
             <div className="form-group">
-              <input type="text" name="u_ids" className="form-control" placeholder="UID Starts-with" />
+              <input type="text" name="u_ide" className="form-control" placeholder="UID Starts-with or Ends-with" />
             </div>
             <div className="form-group">
-              <input type="text" name="u_ide" className="form-control" placeholder="UID Ends-with" />
+              <input type="date" name="date1" className="form-control" placeholder="Date first limit" />
             </div>
             <div className="form-group">
-              <input type="date" name="date" className="form-control" placeholder="Date" />
+              <input type="date" name="date2" className="form-control" placeholder="Date second limit" />
             </div>
             <div className="form-group">
               <select ref={statusRef} className="form-select" name="status">
@@ -183,7 +221,7 @@ const Dashboard = () => {
             <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
               <FaArrowLeft />
             </button>
-           
+
             <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>
               <FaArrowRight />
             </button>

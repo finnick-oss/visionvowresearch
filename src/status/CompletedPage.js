@@ -27,9 +27,9 @@ const CompletedPage = ({ location }) => {
 
     hours = hours % 12;
     hours = hours ? hours : 12; // The hour '0' should be '12'
-    
+
     const strTime = `${hours}:${minutes}:${seconds} ${ampm}`;
-    return `${day}-${month}-${year}, ${strTime}`;
+    return `${year}-${month}-${date}, ${strTime}`;
   };
 
   useEffect(() => {
