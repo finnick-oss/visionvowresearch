@@ -1,5 +1,4 @@
-/* AboutUs.css */
-
+/* 
 .about-us-container {
   text-align: center;
   max-width: 1000px;
@@ -30,7 +29,6 @@
   margin-bottom: 0;
 }
 
-/* Responsive adjustments */
 @media (max-width: 1200px) {
   .about-us-container {
     max-width: 900px;
@@ -89,4 +87,4 @@
   .about-us-text {
     font-size: 14px;
   }
-}
+} */

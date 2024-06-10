@@ -1,5 +1,4 @@
-/* Home.css */
-
+/* 
 .home-container {
   max-width: 1000px;
   margin: 0 auto;
@@ -29,7 +28,7 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 1200px) {
+/* @media (max-width: 1200px) {
   .home-container {
     max-width: 900px;
     padding: 20px;
@@ -103,4 +102,4 @@
   .paragraph {
     font-size: 14px;
   }
-}
+} */

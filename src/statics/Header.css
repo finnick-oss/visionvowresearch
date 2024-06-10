@@ -1,6 +1,5 @@
-.header-container {
+/* .header-container {
   
-  padding: 1rem;
   color: white;
   background: linear-gradient(135deg, #34495e, #2c3e50);
 
@@ -39,7 +38,6 @@
   font-size: 1.5rem;
 }
 
-/* Mobile Styles */
 @media (max-width: 768px) {
   .nav-links {
     display: none;
@@ -63,4 +61,4 @@
   .nav-links li {
     margin: 1rem 0;
   }
-}
+} */

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './Header.css';
 import { Link } from 'react-router-dom';
 import { FaBars } from "react-icons/fa";
 
@@ -10,25 +9,28 @@ const Header = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleNavigation = (event, path) => {
-    event.preventDefault();
-    window.location.href = path;
-  };
-
   return (
-    <header className="header-container">
-      <nav className="nav-container">
-        <h1 className="nav-brand">
+    <header className="px-6 py-6 bg-white shadow-md">
+      <nav className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-blue-800">
           <Link to="/">VisionVow</Link>
         </h1>
-        <ul className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}>
-          <li><Link to="/" onClick={(e) => handleNavigation(e, '/')}>Home</Link></li>
-          <li><Link to="/aboutus" onClick={(e) => handleNavigation(e, '/aboutus')}>About</Link></li>
-          <li><Link to="/dashboard" onClick={(e) => handleNavigation(e, '/dashboard')}>Dashboard</Link></li>
-          <li><Link to="/contactus" onClick={(e) => handleNavigation(e, '/contactus')}>Contact Us</Link></li>
+        <ul className={`hidden md:flex space-x-6 text-gray-700`}>
+          <li><Link to="/" className="hover:text-blue-800">Home</Link></li>
+          <li><Link to="/aboutus" className="hover:text-blue-800">About</Link></li>
+          <li><Link to="/dashboard" className="hover:text-blue-800">Dashboard</Link></li>
+          <li><Link to="/contactus" className="hover:text-blue-800">Contact Us</Link></li>
         </ul>
-        <FaBars className='fabars-icon' onClick={toggleMobileMenu} />
+        <FaBars className="text-2xl text-gray-700 md:hidden" onClick={toggleMobileMenu} />
       </nav>
+      {isMobileMenuOpen && (
+        <ul className="flex flex-col items-center mt-4 space-y-4 md:hidden">
+          <li><Link to="/" className="block text-gray-700 hover:text-blue-800">Home</Link></li>
+          <li><Link to="/aboutus" className="block text-gray-700 hover:text-blue-800">About</Link></li>
+          <li><Link to="/dashboard" className="block text-gray-700 hover:text-blue-800">Dashboard</Link></li>
+          <li><Link to="/contactus" className="block text-gray-700 hover:text-blue-800">Contact Us</Link></li>
+        </ul>
+      )}
     </header>
   );
 };
