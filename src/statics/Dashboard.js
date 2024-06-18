@@ -174,6 +174,7 @@ const Dashboard = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+
   return (
     <>
       {isLoggedIn ? (
@@ -230,7 +231,7 @@ const Dashboard = () => {
                         <td>{item.pid}</td>
                         <td>{item.uid}</td>
                         <td>{item.ip}</td>
-                        <td className={status ${item.status.toLowerCase()}}>{item.status}</td>
+                        <td className={`status ${item.status.toLowerCase()}`}>{item.status}</td>
                         <td>{item.date}</td>
                       </tr>
                     ))
