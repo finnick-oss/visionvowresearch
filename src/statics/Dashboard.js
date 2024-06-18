@@ -2,10 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { and, collection, getDocs } from 'firebase/firestore';
+import { collection, query, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import { FaArrowLeft, FaArrowRight, FaLock } from 'react-icons/fa';
 import './Dashboard.css';
+
 const Dashboard = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -16,25 +17,42 @@ const Dashboard = () => {
   const [Password, setPassword] = useState('');
   const formRef = useRef(null);
   const statusRef = useRef(null);
+  const [lastDoc, setLastDoc] = useState(null); // Track the last document fetched
 
   useEffect(() => {
     const token = localStorage.getItem(process.env.REACT_APP_NAME);
     if (token) {
       setIsLoggedIn(true);
     }
-    const fetchData = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, 'survey'));
-        const surveyData = querySnapshot.docs.map(doc => doc.data());
-        setData(surveyData.reverse());
-        setFilteredData(surveyData);
-      } catch (error) {
-        console.error('Error fetching data from Firestore:', error);
-      }
-    };
-
     fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const surveyRef = collection(db, 'survey');
+      let queryRef = query(surveyRef);
+
+      // If lastDoc is set, fetch the next page starting after lastDoc
+      if (lastDoc) {
+        queryRef = queryRef.startAfter(lastDoc);
+      }
+
+      const querySnapshot = await getDocs(queryRef);
+      const surveyData = querySnapshot.docs.map(doc => doc.data());
+
+      // Update lastDoc to the last document fetched
+      setLastDoc(querySnapshot.docs[querySnapshot.docs.length - 1]);
+
+      // Reverse the order of surveyData to show latest first
+      const reversedData = surveyData.reverse();
+
+      // Concatenate new data to existing state
+      setData(prevData => [...prevData, ...reversedData]);
+      setFilteredData(prevData => [...prevData, ...reversedData]);
+    } catch (error) {
+      console.error('Error fetching data from Firestore:', error);
+    }
+  };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -141,7 +159,6 @@ const Dashboard = () => {
     filtered = filtered.filter(item => filterByDate(item.date, date1, date2));
 
     setFilteredData(filtered);
-    console.log(filtered);
     setCurrentPage(1);
 
     // Reset the status field
@@ -201,8 +218,8 @@ const Dashboard = () => {
                     <th scope="col">Project ID</th>
                     <th scope="col">User ID</th>
                     <th scope="col">IP Address</th>
-                    <th scope="col">Completion Time</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Completion Time</th>
                   </tr>
                 </thead>
                 <tbody id="table-body">
@@ -213,8 +230,8 @@ const Dashboard = () => {
                         <td>{item.pid}</td>
                         <td>{item.uid}</td>
                         <td>{item.ip}</td>
+                        <td className={status ${item.status.toLowerCase()}}>{item.status}</td>
                         <td>{item.date}</td>
-                        <td className={`status ${item.status.toLowerCase()}`}>{item.status}</td>
                       </tr>
                     ))
                   ) : (
