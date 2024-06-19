@@ -77,7 +77,6 @@ const TerminatePage = ({ location }) => {
           <table className="table table-bordered table-hover table-sm text-center">
             <thead>
               <tr>
-                <th scope="col">Serial NO.</th>
                 <th scope="col">Project ID</th>
                 <th scope="col">User ID</th>
                 <th scope="col">IP Address</th>
@@ -88,7 +87,6 @@ const TerminatePage = ({ location }) => {
             <tbody id="table-body">
               {data.map((survey, index) => (
                 <tr key={index}>
-                  <td>{index + 1}</td>
                   <td>{survey.pid}</td>
                   <td>{survey.uid}</td>
                   <td>{survey.ip}</td>
