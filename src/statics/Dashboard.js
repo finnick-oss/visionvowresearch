@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { collection, query, getDocs } from 'firebase/firestore';
+import { query, orderBy, collection, getDocs, limit, startAfter,where } from 'firebase/firestore';
 import { db } from '../firebase';
 import { FaArrowLeft, FaArrowRight, FaLock } from 'react-icons/fa';
 import './Dashboard.css';
@@ -11,46 +12,70 @@ const Dashboard = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(100); // Assuming 100 items per page
+  const [itemsPerPage] = useState(100);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [User, setUser] = useState('');
   const [Password, setPassword] = useState('');
   const formRef = useRef(null);
   const statusRef = useRef(null);
-  const [lastDoc, setLastDoc] = useState(null); // Track the last document fetched
+  const [lastValue, setLastValue] = useState('');
+  
+  const [lastFilterValue, setLastFilterValue] = useState('');
 
   useEffect(() => {
     const token = localStorage.getItem(process.env.REACT_APP_NAME);
     if (token) {
       setIsLoggedIn(true);
     }
+    const fetchData = async () => {
+      try {
+        // Query the first page of docs
+        const first = query(collection(db, "survey"), orderBy("timestamp", 'desc'), limit(101));
+        const documentSnapshots = await getDocs(first);
+        const datad = documentSnapshots.docs.map(doc => doc.data());
+
+        // Get the last visible document
+              const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length - 1];
+        setLastValue(lastVisible);
+        setLastFilterValue('');
+
+        setData(datad);
+        setFilteredData(datad);
+        setCurrentPage(1); // Reset pagination to the first page
+
+       // setData(datad);
+      } catch (error) {
+        console.error('Error fetching data from Firestore:', error);
+      }
+    };
+
     fetchData();
   }, []);
 
-  const fetchData = async () => {
-    try {
-      const surveyRef = collection(db, 'survey');
-      let queryRef = query(surveyRef);
+  const fetchNextData = async () => {
+    if (lastValue) {
+      try {
+        const next = query(
+          collection(db, "survey"),
+          orderBy("timestamp", 'desc'),
+          startAfter(lastValue),
+          limit(100)
+        );
+        const nextDocumentSnapshots = await getDocs(next);
+        const nextData = nextDocumentSnapshots.docs.map(doc => doc.data());
 
-      // If lastDoc is set, fetch the next page starting after lastDoc
-      if (lastDoc) {
-        queryRef = queryRef.startAfter(lastDoc);
+        // Update last visible document
+        const newLastVisible = nextDocumentSnapshots.docs[nextDocumentSnapshots.docs.length - 1];
+        setLastValue(newLastVisible);
+        setLastFilterValue('');
+
+        // Append new data to the existing data
+        setData(prevData => [...prevData, ...nextData]);
+        setFilteredData(prevData => [...prevData, ...nextData]);
+       
+      } catch (error) {
+        console.error('Error fetching next data from Firestore:', error);
       }
-
-      const querySnapshot = await getDocs(queryRef);
-      const surveyData = querySnapshot.docs.map(doc => doc.data());
-
-      // Update lastDoc to the last document fetched
-      setLastDoc(querySnapshot.docs[querySnapshot.docs.length - 1]);
-
-      // Reverse the order of surveyData to show latest first
-      const reversedData = surveyData.reverse();
-
-      // Concatenate new data to existing state
-      setData(prevData => [...prevData, ...reversedData]);
-      setFilteredData(prevData => [...prevData, ...reversedData]);
-    } catch (error) {
-      console.error('Error fetching data from Firestore:', error);
     }
   };
 
@@ -112,68 +137,148 @@ const Dashboard = () => {
     }
   };
 
+
+
   const handleFilter = (e) => {
     e.preventDefault();
     const pid = e.target.p_id.value.trim();
     const uidValue = e.target.u_ide.value.trim();
     const date1 = e.target.date1.value;
     const date2 = e.target.date2.value;
-    const status = e.target.status.value.trim().toLowerCase();
+    const status = e.target.status.value;
 
-    let filtered = data;
-
-    if (status) {
-      filtered = filtered.filter(item => item.status.toLowerCase() === status);
-    }
-    if (pid) {
-      filtered = filtered.filter(item => item.pid.includes(pid));
-    }
-    if (uidValue) {
-      filtered = filtered.filter(item => item.uid.startsWith(uidValue) || item.uid.endsWith(uidValue));
-    }
-
-    const filterByDate = (itemDate, date1, date2) => {
-      const parsedItemDate = parseCustomDate(itemDate);
-      if (!parsedItemDate) return false;
-
-      const date1Obj = date1 ? parseCustomDate(date1) : null;
-      const date2Obj = date2 ? parseCustomDate(date2) : null;
-
-      if (date1Obj && date2Obj) {
-        return (
-          parsedItemDate.getFullYear() >= date1Obj.getFullYear() &&
-          parsedItemDate.getMonth() >= date1Obj.getMonth() &&
-          parsedItemDate.getDate() >= date1Obj.getDate() &&
-          parsedItemDate.getFullYear() <= date2Obj.getFullYear() &&
-          parsedItemDate.getMonth() <= date2Obj.getMonth() &&
-          parsedItemDate.getDate() <= date2Obj.getDate()
-        );
-      } else if (date1) {
-        return parsedItemDate.toDateString() === date1Obj.toDateString();
-      } else if (date2) {
-        return parsedItemDate.toDateString() === date2Obj.toDateString();
-      }
-      return true;
+    const filters = {
+      pid,
+      uid: uidValue,
+      date1,
+      date2,
+      status
     };
 
-    filtered = filtered.filter(item => filterByDate(item.date, date1, date2));
 
-    setFilteredData(filtered);
-    setCurrentPage(1);
 
-    // Reset the status field
-    if (statusRef.current) {
+    
+
+
+    fetchFilterData(filters);
+    
+
+   
+
+     // Reset the status field
+     if (statusRef.current) {
       statusRef.current.value = '';
     }
+
+    if(formRef.current){
+      formRef.current.value='';
+    }
+
   };
+
+
+
+  const fetchFilterData = async (filters = {}) => {
+    try {
+      let nextQuery = query(collection(db, "survey"), orderBy("timestamp", 'desc'));
+  
+      if (filters.status) {
+        if (filters.status == "complete") {
+          nextQuery = query(nextQuery, where("status", "==", "Complete"), limit(150));
+        }
+        if (filters.status == "terminate") {
+          nextQuery = query(nextQuery, where("status", "==", "Terminate"), limit(150));
+        }
+        if (filters.status == "quotafull") {
+          nextQuery = query(nextQuery, where("status", "==", "Quotafull"), limit(150));
+        }
+      }
+      if (filters.pid) {
+        nextQuery = query(nextQuery, where("pid", "==", filters.pid));
+      }
+      if (filters.uid) {
+        nextQuery = query(nextQuery, where("uid", "==", filters.uid));
+      }
+
+  
+      const nextDocumentSnapshots = await getDocs(nextQuery);
+      let nextData = nextDocumentSnapshots.docs.map(doc => doc.data());
+      const newLastFilterVisible = nextDocumentSnapshots.docs[nextDocumentSnapshots.docs.length - 1];
+  
+
+      //for date 
+      if(filters.date1||filters.date2){
+  
+      const d1=filters.date1;
+      const d2=filters.date2;
+  
+      const filterByDate = (itemDate, d1, d2) => {
+        const parsedItemDate = parseCustomDate(itemDate);
+
+        
+        if (!parsedItemDate) return false;
+  
+        const date1Obj = d1 ? parseCustomDate(d1) : null;
+        const date2Obj = d2 ? parseCustomDate(d2) : null;
+  
+        if (date1Obj && date2Obj) {
+          return (
+            parsedItemDate.getFullYear() >= date1Obj.getFullYear() &&
+            parsedItemDate.getMonth() >= date1Obj.getMonth() &&
+            parsedItemDate.getDate() >= date1Obj.getDate() &&
+            parsedItemDate.getFullYear() <= date2Obj.getFullYear() &&
+            parsedItemDate.getMonth() <= date2Obj.getMonth() &&
+            parsedItemDate.getDate() <= date2Obj.getDate()
+          );
+        } else if (d1) {
+          return parsedItemDate.toDateString() === date1Obj.toDateString();
+        } else if (d2) {
+          return parsedItemDate.toDateString() === date2Obj.toDateString();
+        }
+        return true;
+      };
+  
+      nextData= nextData.filter(item => filterByDate(item.date, filters.date1, filters.date2));
+  
+  
+    }
+
+
+      setLastFilterValue(newLastFilterVisible);
+      setLastValue('');
+  
+      // Update both data and filteredData
+      setData(nextData); // Reset data with new filtered data
+      setFilteredData(nextData); // Reset filteredData with new filtered data
+  
+      setCurrentPage(1); // Reset pagination to the first page
+    } catch (error) {
+      console.error('Error fetching next data from Firestore:', error);
+    }
+  };
+  
+
+
+
+
+
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = async (pageNumber) => {
+    if (pageNumber > currentPage && currentPage < totalPages) {
 
+
+      if(lastValue){      
+      await fetchNextData();
+      }
+
+    }
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <>
@@ -255,7 +360,6 @@ const Dashboard = () => {
             </button>
           </div>
           <div className='pages'>
-            <span className='total-text'>Total ({data.length})</span>
 
             <button onClick={() => exportToExcel(data)} className="btn btn-export">
               Export
