@@ -172,7 +172,7 @@ const Dashboard = () => {
 
     if(formRef.current){
       formRef.current.value='';
-    }
+     }
 
   };
 
@@ -200,48 +200,65 @@ const Dashboard = () => {
         nextQuery = query(nextQuery, where("uid", "==", filters.uid));
       }
 
+
+
+
+      if(filters.date1 && filters.date2){
+      
+        nextQuery = query(
+          nextQuery,
+          where("timestamp", "<=", filters.date1),
+          where("timestamp", ">=",  filters.date2)
+        );
+        
+      }
+      else
+      if (filters.date1) {
+        const startDate = new Date(filters.date1);
+        const nextDay = new Date(startDate);
+        nextDay.setDate(startDate.getDate() + 1);
+      
+        // Format the nextDay date to DD-MM-YYYY
+        const day = ("0" + nextDay.getDate()).slice(-2);
+        const month = ("0" + (nextDay.getMonth() + 1)).slice(-2);
+        const year = nextDay.getFullYear();
+        const formattedNextDay = `${year}-${month}-${day}`;
+      
+        console.error("searched day ="+filters.date1+" next day ="+formattedNextDay);
+
+        nextQuery = query(
+          nextQuery,
+          where("timestamp", ">=", filters.date1),
+          where("timestamp", "<", formattedNextDay)
+        );
+      }
+      else
+      if (filters.date2) {
+        const startDate = new Date(filters.date2);
+        const nextDay = new Date(startDate);
+        nextDay.setDate(startDate.getDate() + 1);
+      
+        // Format the nextDay date to DD-MM-YYYY
+        const day = ("0" + nextDay.getDate()).slice(-2);
+        const month = ("0" + (nextDay.getMonth() + 1)).slice(-2);
+        const year = nextDay.getFullYear();
+        const formattedNextDay = `${year}-${month}-${day}`;
+      
+        console.error("searched day ="+filters+" next day ="+formattedNextDay);
+
+        nextQuery = query(
+          nextQuery,
+          where("timestamp", ">=", filters),
+          where("timestamp", "<", formattedNextDay)
+        );
+      }
   
       const nextDocumentSnapshots = await getDocs(nextQuery);
       let nextData = nextDocumentSnapshots.docs.map(doc => doc.data());
       const newLastFilterVisible = nextDocumentSnapshots.docs[nextDocumentSnapshots.docs.length - 1];
   
 
-      //for date 
-      if(filters.date1||filters.date2){
-  
-      const d1=filters.date1;
-      const d2=filters.date2;
-  
-      const filterByDate = (itemDate, d1, d2) => {
-        const parsedItemDate = parseCustomDate(itemDate);
-
-        
-        if (!parsedItemDate) return false;
-  
-        const date1Obj = d1 ? parseCustomDate(d1) : null;
-        const date2Obj = d2 ? parseCustomDate(d2) : null;
-  
-        if (date1Obj && date2Obj) {
-          return (
-            parsedItemDate.getFullYear() >= date1Obj.getFullYear() &&
-            parsedItemDate.getMonth() >= date1Obj.getMonth() &&
-            parsedItemDate.getDate() >= date1Obj.getDate() &&
-            parsedItemDate.getFullYear() <= date2Obj.getFullYear() &&
-            parsedItemDate.getMonth() <= date2Obj.getMonth() &&
-            parsedItemDate.getDate() <= date2Obj.getDate()
-          );
-        } else if (d1) {
-          return parsedItemDate.toDateString() === date1Obj.toDateString();
-        } else if (d2) {
-          return parsedItemDate.toDateString() === date2Obj.toDateString();
-        }
-        return true;
-      };
-  
-      nextData= nextData.filter(item => filterByDate(item.date, filters.date1, filters.date2));
-  
-  
-    }
+    
 
 
       setLastFilterValue(newLastFilterVisible);
