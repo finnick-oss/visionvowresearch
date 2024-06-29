@@ -242,8 +242,17 @@ filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#40C9FF", en
 .parent_div h2 {
   text-align: center;
   margin: 0.5rem 0 1.0rem 0;
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
+
+.gradient-text {
+  font-size: 2em; /* Increase the text size */
+  font-weight: bold;
+  background: linear-gradient(to right, darkblue, violet);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 
 .pages {
   display: flex;
