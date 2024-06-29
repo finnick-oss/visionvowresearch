@@ -32,10 +32,6 @@ const Dashboard = () => {
       try {
         // Query the first page of docs
 
-    
-        const coll = collection(db, "survey");
-        const snapshot = await getCountFromServer(coll);
-         setCountSurvey(snapshot.data().count);
 
 
       const   first = query(collection(db, "survey"), orderBy("timestamp", 'desc'), limit(101));
@@ -51,6 +47,13 @@ const Dashboard = () => {
         setFilteredData(datad);
         setCurrentPage(1); // Reset pagination to the first page
 
+
+    
+        const coll = collection(db, "survey");
+        const snapshot = await getCountFromServer(coll);
+         setCountSurvey(snapshot.data().count);
+
+        
        // setData(datad);
       } catch (error) {
         console.error('Error fetching data from Firestore:', error);
