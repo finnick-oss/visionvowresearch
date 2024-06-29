@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { query, orderBy, collection, getDocs, limit, startAfter,where } from 'firebase/firestore';
+import { query, orderBy, collection, getDocs, limit, startAfter,where, count,getCountFromServer } from 'firebase/firestore';
 import { db } from '../firebase';
 import { FaArrowLeft, FaArrowRight, FaLock } from 'react-icons/fa';
 import './Dashboard.css';
@@ -21,6 +21,7 @@ const Dashboard = () => {
   const [lastValue, setLastValue] = useState('');
   
   const [lastFilterValue, setLastFilterValue] = useState('');
+  const [countSurvey,setCountSurvey] = useState('');
 
   useEffect(() => {
     const token = localStorage.getItem(process.env.REACT_APP_NAME);
@@ -30,7 +31,14 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         // Query the first page of docs
-        const first = query(collection(db, "survey"), orderBy("timestamp", 'desc'), limit(101));
+
+    
+        const coll = collection(db, "survey");
+        const snapshot = await getCountFromServer(coll);
+         setCountSurvey(snapshot.data().count);
+
+
+      const   first = query(collection(db, "survey"), orderBy("timestamp", 'desc'), limit(101));
         const documentSnapshots = await getDocs(first);
         const datad = documentSnapshots.docs.map(doc => doc.data());
 
@@ -184,6 +192,12 @@ const Dashboard = () => {
   
       if (filters.status) {
         if (filters.status == "complete") {
+
+          // const coll = query(nextQuery, where("status", "==", "Complete"));
+          // const snapshot = await getCountFromServer(coll);
+          // setCountSurvey(snapshot.data().count);
+  
+
           nextQuery = query(nextQuery, where("status", "==", "Complete"), limit(150));
         }
         if (filters.status == "terminate") {
@@ -242,13 +256,13 @@ const Dashboard = () => {
         const day = ("0" + nextDay.getDate()).slice(-2);
         const month = ("0" + (nextDay.getMonth() + 1)).slice(-2);
         const year = nextDay.getFullYear();
-        const formattedNextDay = `${year}-${month}-${day}`;
+        const formattedNextDay = `${day}-${month}-${year}`;
       
-        console.error("searched day ="+filters+" next day ="+formattedNextDay);
+        console.error("searched day ="+filters.date2.split("-").reverse().join("-")+" next day ="+formattedNextDay);
 
         nextQuery = query(
           nextQuery,
-          where("timestamp", ">=", filters),
+          where("timestamp", ">=", filters.date2.split("-").reverse().join("-")),
           where("timestamp", "<", formattedNextDay)
         );
       }
@@ -302,7 +316,7 @@ const Dashboard = () => {
       {isLoggedIn ? (
         <div className="container-fluid pt-5">
           <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 className="h2">Dashboard</h1>
+            <h1 className="h2 gradient-text">Total Survyes : {countSurvey}</h1>
             <div className="btn-toolbar mb-2 mb-md-0"></div>
           </div>
 
@@ -376,8 +390,7 @@ const Dashboard = () => {
               <FaArrowRight />
             </button>
           </div>
-          <div className='pages'>
-
+          <div className="pages">
             <button onClick={() => exportToExcel(data)} className="btn btn-export">
               Export
             </button>
