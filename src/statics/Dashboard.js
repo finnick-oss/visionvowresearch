@@ -35,8 +35,18 @@ const Dashboard = () => {
         const documentSnapshots = await getDocs(first);
         const datad = documentSnapshots.docs.map(doc => doc.data());
         setData(datad)
+        setFilteredData(datad)
        
-        
+                
+      } catch (error) {
+        console.error('Error fetching data from Firestore:', error);
+      }
+    };
+
+
+    const fetchDataLast = async () => {
+      try {
+      
         let result = await index.search('', { hitsPerPage: 1000 });
         let hits = result.hits;
   
@@ -47,17 +57,31 @@ const Dashboard = () => {
         setDataAlgolia(hits);
         setFilteredData(hits);
 
-
-        const coll = collection(db, "survey");
-        const snapshot = await getCountFromServer(coll);
-        setCountSurvey(snapshot.data().count);
         
       } catch (error) {
         console.error('Error fetching data from Firestore:', error);
       }
     };
 
+
+    const fetchTotalSize = async () => {
+      try {
+      
+        const coll = collection(db, "survey");
+        const snapshot = await getCountFromServer(coll);
+        setCountSurvey(snapshot.data().count);
+
+        
+      } catch (error) {
+        console.error('Error fetching data from Firestore:', error);
+      }
+    };
+
+
     fetchData();
+    fetchDataLast();
+    fetchTotalSize();
+
   }, []);
 
   const handleLogin = (e) => {
@@ -132,10 +156,10 @@ const Dashboard = () => {
       filtered = filtered.filter(item => item.status.toLowerCase() === status);
     }
     if (pid) {
-      filtered = filtered.filter(item => item.pid.toLowerCase().includes(pid));
+      filtered = filtered.filter(item => item.pid.toLowerCase().includes(pid.toLowerCase()));
     }
     if (uidValue) {
-      filtered = filtered.filter(item =>  item.uid.toLowerCase().includes(uidValue));
+      filtered = filtered.filter(item =>  item.uid.toLowerCase().includes(uidValue.toLowerCase()));
     }
   
     const filterByDate = (itemDate, date1, date2) => {
