@@ -8,13 +8,19 @@ const QuotaFullPage = ({ location }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('https://geolocation-db.com/json/')
-      .then(response => response.json())
-      .then(data => {
-        setIPAddress(data.IPv4);
-      })
-      .catch(error => console.log(error));
+    const fetchIPAddress = async () => {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        setIPAddress(data.ip);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchIPAddress();
   }, []);
+
   const formatDateTime = (date) => {
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
@@ -29,7 +35,7 @@ const QuotaFullPage = ({ location }) => {
 
     const strTime = `${hours}:${minutes}:${seconds} ${ampm}`;
     return `${day}-${month}-${year}, ${strTime}`;
-};
+  };
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);

@@ -8,12 +8,17 @@ const TerminatePage = ({ location }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('https://geolocation-db.com/json/')
-      .then(response => response.json())
-      .then(data => {
-        setIPAddress(data.IPv4);
-      })
-      .catch(error => console.log(error));
+    const fetchIPAddress = async () => {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        setIPAddress(data.ip);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchIPAddress();
   }, []);
 
   const formatDateTime = (date) => {
@@ -31,6 +36,7 @@ const TerminatePage = ({ location }) => {
     const strTime = `${hours}:${minutes}:${seconds} ${ampm}`;
     return `${day}-${month}-${year}, ${strTime}`;
   };
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const pid = searchParams.get('pid');
@@ -71,7 +77,7 @@ const TerminatePage = ({ location }) => {
 
   return (
     <div className="complete-page">
-      <h1 className="complete-title">Opps!! Survey Terminated</h1>
+      <h1 className="complete-title">Oops!! Survey Terminated</h1>
       <div className="table-container">
         <div className="table-responsive">
           <table className="table table-bordered table-hover table-sm text-center">
