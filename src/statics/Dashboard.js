@@ -31,11 +31,11 @@ const Dashboard = () => {
     }
     const fetchData = async () => {
       try {
-        const first = query(collection(db, "survey"), orderBy("timestamp", 'desc'), limit(101));
-        const documentSnapshots = await getDocs(first);
-        const datad = documentSnapshots.docs.map(doc => doc.data());
-        setData(datad)
-        setFilteredData(datad)
+        let result = await index.search('', { hitsPerPage: 101 });
+        let hits = result.hits;
+  
+        setData(hits)
+        setFilteredData(hits)
        
                 
       } catch (error) {
@@ -78,9 +78,9 @@ const Dashboard = () => {
     };
 
 
+    fetchTotalSize();
     fetchData();
     fetchDataLast();
-    fetchTotalSize();
 
   }, []);
 
