@@ -8,6 +8,7 @@ import ContactUs from './statics/ContactUs';
 import CompletedPage from './status/CompletedPage';
 import TerminatePage from './status/TerminatePage';
 import QuotaFullPage from './status/QuotaFullPage';
+import AdminDashboard from './statics/AdminDashboard';
 import './App.css';
 
 function App() {
@@ -20,7 +21,8 @@ function App() {
             <Route path="/" exact component={Home} />714
             <Route path="/aboutus" component={AboutUs} />
             <Route path="/dashboard" component={Dashboard} />
-            <Route path="/contactus" component={ContactUs} />
+            <Route path="/contactus" component={ContactUs} />         
+            <Route path="/admin" component={AdminDashboard} />
             <Route path="/redirect/complete" exact render={(props) => <CompletedPage {...props} />} />
             <Route path="/redirect/terminate" exact render={(props) => <TerminatePage {...props} />} />
             <Route path="/redirect/quotafull" exact render={(props) => <QuotaFullPage {...props} />} />
