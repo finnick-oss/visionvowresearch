@@ -90,6 +90,42 @@ const AdminDashboard = () => {
                 setDataAlgolia(hits);
                 setFilteredData(hits);
 
+                // Fetch another 1000 results
+                result = await index.search('', { hitsPerPage: 1000, page: 6 });
+                hits = hits.concat(result.hits);
+
+                setDataAlgolia(hits);
+                setFilteredData(hits);
+
+                // Fetch another 1000 results
+                result = await index.search('', { hitsPerPage: 1000, page: 7 });
+                hits = hits.concat(result.hits);
+
+                setDataAlgolia(hits);
+                setFilteredData(hits);
+
+                // Fetch another 1000 results
+                result = await index.search('', { hitsPerPage: 1000, page: 8 });
+                hits = hits.concat(result.hits);
+
+                setDataAlgolia(hits);
+                setFilteredData(hits);
+
+                // Fetch another 1000 results
+                result = await index.search('', { hitsPerPage: 1000, page: 9 });
+                hits = hits.concat(result.hits);
+
+                setDataAlgolia(hits);
+                setFilteredData(hits);
+
+                // Fetch another 1000 results
+                result = await index.search('', { hitsPerPage: 1000, page: 10 });
+                hits = hits.concat(result.hits);
+
+                setDataAlgolia(hits);
+                setFilteredData(hits);
+
+
 
             } catch (error) {
                 console.error('Error fetching data from Firestore:', error);
