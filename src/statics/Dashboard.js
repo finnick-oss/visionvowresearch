@@ -51,7 +51,7 @@ const Dashboard = () => {
         let hits = result.hits;
   
         // Fetch another 1000 results
-        result = await index.search('', { hitsPerPage: 1000, page: 1 });
+        // result = await index.search('', { hitsPerPage: 1000, page: 1 });
         hits = hits.concat(result.hits);
   
         setDataAlgolia(hits);
