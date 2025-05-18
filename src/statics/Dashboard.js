@@ -31,7 +31,7 @@ const Dashboard = () => {
     }
     const fetchData = async () => {
       try {
-        let result = await index.search('', { hitsPerPage: 101 });
+        let result = await index.search('', { hitsPerPage: 1000 });
         let hits = result.hits;
   
         setData(hits)
@@ -44,24 +44,24 @@ const Dashboard = () => {
     };
 
 
-    const fetchDataLast = async () => {
-      try {
+    // const fetchDataLast = async () => {
+    //   try {
       
-        let result = await index.search('', { hitsPerPage: 1000 });
-        let hits = result.hits;
+    //     let result = await index.search('', { hitsPerPage: 1000 });
+    //     let hits = result.hits;
   
-        // Fetch another 1000 results
-        // result = await index.search('', { hitsPerPage: 1000, page: 1 });
-        hits = hits.concat(result.hits);
+    //     // Fetch another 1000 results
+    //     // result = await index.search('', { hitsPerPage: 1000, page: 1 });
+    //     hits = hits.concat(result.hits);
   
-        setDataAlgolia(hits);
-        setFilteredData(hits);
+    //     setDataAlgolia(hits);
+    //     setFilteredData(hits);
 
         
-      } catch (error) {
-        console.error('Error fetching data from Firestore:', error);
-      }
-    };
+    //   } catch (error) {
+    //     console.error('Error fetching data from Firestore:', error);
+    //   }
+    // };
 
 
     const fetchTotalSize = async () => {
@@ -80,7 +80,7 @@ const Dashboard = () => {
 
     fetchTotalSize();
     fetchData();
-    fetchDataLast();
+    // fetchDataLast();
 
   }, []);
 
