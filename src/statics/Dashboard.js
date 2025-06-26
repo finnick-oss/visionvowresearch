@@ -31,37 +31,16 @@ const Dashboard = () => {
     }
     const fetchData = async () => {
       try {
-        let result = await index.search('', { hitsPerPage: 1000 });
-        let hits = result.hits;
-  
-        setData(hits)
-        setFilteredData(hits)
-       
-                
+      const first = query(collection(db, "survey"), orderBy("timestamp", 'desc'), limit(201));
+      const documentSnapshots = await getDocs(first);
+      const datad = documentSnapshots.docs.map(doc => doc.data());
+      setData(datad);
+      setFilteredData(datad);
       } catch (error) {
-        console.error('Error fetching data from Firestore:', error);
+      console.error('Error fetching data from Firestore:', error);
       }
     };
 
-
-    // const fetchDataLast = async () => {
-    //   try {
-      
-    //     let result = await index.search('', { hitsPerPage: 1000 });
-    //     let hits = result.hits;
-  
-    //     // Fetch another 1000 results
-    //     // result = await index.search('', { hitsPerPage: 1000, page: 1 });
-    //     hits = hits.concat(result.hits);
-  
-    //     setDataAlgolia(hits);
-    //     setFilteredData(hits);
-
-        
-    //   } catch (error) {
-    //     console.error('Error fetching data from Firestore:', error);
-    //   }
-    // };
 
 
     const fetchTotalSize = async () => {

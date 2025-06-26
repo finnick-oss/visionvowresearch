@@ -24,7 +24,9 @@ const AdminDashboard = () => {
     const statusRef = useRef(null);
     const [countSurvey, setCountSurvey] = useState('');
 
+    // Only fetch data after login
     useEffect(() => {
+        if (!isLoggedIn) return;
 
         const fetchData = async () => {
             try {
@@ -218,8 +220,7 @@ const AdminDashboard = () => {
         fetchTotalSize();
         fetchData();
         fetchDataLast();
-
-    }, []);
+    }, [isLoggedIn]);
 
     const handleLogin = (e) => {
         e.preventDefault();
