@@ -67,135 +67,135 @@ const AdminDashboard = () => {
                 hits = hits.concat(result.hits);
 
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 3 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 3 });
+                // hits = hits.concat(result.hits);
 
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 4 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 4 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 5 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 5 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 6 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 6 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 7 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 7 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 8 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 8 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 9 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 9 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 10 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 10 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 11 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 11 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 12 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 12 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 13 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 13 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 14 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 14 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 15 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 15 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 16 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 16 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 17 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 17 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 18 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 18 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 19 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 19 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
-                // Fetch another 1000 results
-                result = await index.search('', { hitsPerPage: 1000, page: 20 });
-                hits = hits.concat(result.hits);
+                // // Fetch another 1000 results
+                // result = await index.search('', { hitsPerPage: 1000, page: 20 });
+                // hits = hits.concat(result.hits);
 
-                setDataAlgolia(hits);
-                setFilteredData(hits);
+                // setDataAlgolia(hits);
+                // setFilteredData(hits);
 
             } catch (error) {
                 console.error('Error fetching data from Firestore:', error);
