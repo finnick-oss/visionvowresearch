@@ -67,27 +67,27 @@ const AdminDashboard = () => {
                 hits = hits.concat(result.hits);
 
 
-                // setDataAlgolia(hits);
-                // setFilteredData(hits);
+                setDataAlgolia(hits);
+                setFilteredData(hits);
 
-                // // Fetch another 1000 results
-                // result = await index.search('', { hitsPerPage: 1000, page: 3 });
-                // hits = hits.concat(result.hits);
+                // Fetch another 1000 results
+                result = await index.search('', { hitsPerPage: 1000, page: 3 });
+                hits = hits.concat(result.hits);
 
 
-                // setDataAlgolia(hits);
-                // setFilteredData(hits);
+                setDataAlgolia(hits);
+                setFilteredData(hits);
 
-                // // Fetch another 1000 results
-                // result = await index.search('', { hitsPerPage: 1000, page: 4 });
-                // hits = hits.concat(result.hits);
+                // Fetch another 1000 results
+                result = await index.search('', { hitsPerPage: 1000, page: 4 });
+                hits = hits.concat(result.hits);
 
-                // setDataAlgolia(hits);
-                // setFilteredData(hits);
+                setDataAlgolia(hits);
+                setFilteredData(hits);
 
-                // // Fetch another 1000 results
-                // result = await index.search('', { hitsPerPage: 1000, page: 5 });
-                // hits = hits.concat(result.hits);
+                // Fetch another 1000 results
+                result = await index.search('', { hitsPerPage: 1000, page: 5 });
+                hits = hits.concat(result.hits);
 
                 // setDataAlgolia(hits);
                 // setFilteredData(hits);
