@@ -91,91 +91,122 @@ const Dashboard = () => {
     saveAs(blob, fileName);
   };
 
-  const parseCustomDate = (dateString) => {
-    if (!dateString) return null;
+    const parseCustomDate = (dateString) => {
+        if (!dateString) return null;
 
-    try {
-      if (dateString.includes(', ')) {
-        // Custom format: DD-MM-YYYY, hh:mm:ss AM/PM
-        const [datePart, timePart] = dateString.split(', ');
-        const [day, month, year] = datePart.split('-').map(Number);
-        const [time, period] = timePart.split(' ');
-        let [hours, minutes, seconds] = time.split(':').map(Number);
+        try {
+            if (dateString.includes(', ')) {
+                // Custom format: DD-MM-YYYY, hh:mm:ss AM/PM
+                const [datePart, timePart] = dateString.split(', ');
+                const [day, month, year] = datePart.split('-').map(Number);
+                const [time, period] = timePart.split(' ');
+                let [hours, minutes, seconds] = time.split(':').map(Number);
 
-        if (period.toLowerCase() === 'pm' && hours < 12) {
-          hours += 12;
-        } else if (period.toLowerCase() === 'am' && hours === 12) {
-          hours = 0;
+                if (period.toLowerCase() === 'pm' && hours < 12) {
+                    hours += 12;
+                } else if (period.toLowerCase() === 'am' && hours === 12) {
+                    hours = 0;
+                }
+
+                return new Date(year, month - 1, day, hours, minutes, seconds);
+            } else if (dateString.includes('-')) {
+                const parts = dateString.split('-');
+                if (parts.length === 3) {
+                    // Check if it's YYYY-MM-DD (HTML date input format) or DD-MM-YYYY
+                    const [first, second, third] = parts.map(Number);
+                    
+                    if (first > 31) {
+                        // Format: YYYY-MM-DD (HTML date input)
+                        return new Date(first, second - 1, third);
+                    } else {
+                        // Format: DD-MM-YYYY
+                        return new Date(third, second - 1, first);
+                    }
+                }
+            }
+            return null;
+        } catch (error) {
+            console.error('Error parsing date:', error);
+            return null;
+        }
+    };
+
+    const handleFilter = (e) => {
+        e.preventDefault();
+        const pid = e.target.p_id.value.trim().toLowerCase();
+        const uidValue = e.target.u_ide.value.trim();
+        const date1 = e.target.date1.value;
+        const date2 = e.target.date2.value;
+        const status = e.target.status.value.trim().toLowerCase();
+
+        console.log('Filter inputs:', { pid, uidValue, date1, date2, status });
+        console.log('Total data before filtering:', dataAlgolia.length);
+
+        let filtered = dataAlgolia;
+
+        if (status) {
+            filtered = filtered.filter(item => item.status.toLowerCase() === status);
+            console.log('After status filter:', filtered.length);
+        }
+        if (pid) {
+            filtered = filtered.filter(item => item.pid.toLowerCase().includes(pid.toLowerCase()));
+            console.log('After PID filter:', filtered.length);
+        }
+        if (uidValue) {
+            filtered = filtered.filter(item => item.uid.toLowerCase().includes(uidValue.toLowerCase()));
+            console.log('After UID filter:', filtered.length);
         }
 
-        return new Date(year, month - 1, day, hours, minutes, seconds);
-      } else if (dateString.includes('-')) {
-        // Format: YYYY-MM-DD
-        const [year, month, day] = dateString.split('-').map(Number);
-        return new Date(year, month - 1, day);
-      }
-      return null;
-    } catch (error) {
-      console.error('Error parsing date:', error);
-      return null;
-    }
-  };
+        const filterByDate = (itemDate, date1, date2) => {
+            const parsedItemDate = parseCustomDate(itemDate);
+            if (!parsedItemDate) return false;
 
-  const handleFilter = (e) => {
-    e.preventDefault();
-    const pid = e.target.p_id.value.trim().toLowerCase();
-    const uidValue = e.target.u_ide.value.trim();
-    const date1 = e.target.date1.value;
-    const date2 = e.target.date2.value;
-    const status = e.target.status.value.trim().toLowerCase();
-  
-    let filtered = dataAlgolia;
-  
-    if (status) {
-      filtered = filtered.filter(item => item.status.toLowerCase() === status);
-    }
-    if (pid) {
-      filtered = filtered.filter(item => item.pid.toLowerCase().includes(pid.toLowerCase()));
-    }
-    if (uidValue) {
-      filtered = filtered.filter(item =>  item.uid.toLowerCase().includes(uidValue.toLowerCase()));
-    }
-  
-    const filterByDate = (itemDate, date1, date2) => {
-      const parsedItemDate = parseCustomDate(itemDate);
-      if (!parsedItemDate) return false;
-  
-      const date1Obj = date1 ? parseCustomDate(date1) : null;
-      const date2Obj = date2 ? parseCustomDate(date2) : null;
-  
-      if (date1Obj && date2Obj) {
-        return (
-          parsedItemDate.getFullYear() >= date1Obj.getFullYear() &&
-          parsedItemDate.getMonth() >= date1Obj.getMonth() &&
-          parsedItemDate.getDate() >= date1Obj.getDate() &&
-          parsedItemDate.getFullYear() <= date2Obj.getFullYear() &&
-          parsedItemDate.getMonth() <= date2Obj.getMonth() &&
-          parsedItemDate.getDate() <= date2Obj.getDate()
-        );
-      } else if (date1) {
-        return parsedItemDate.toDateString() === date1Obj.toDateString();
-      } else if (date2) {
-        return parsedItemDate.toDateString() === date2Obj.toDateString();
-      }
-      return true;
+            const date1Obj = date1 ? new Date(date1) : null;
+            const date2Obj = date2 ? new Date(date2) : null;
+
+            // Set time to start/end of day for proper comparison
+            if (date1Obj) {
+                date1Obj.setHours(0, 0, 0, 0);
+            }
+            if (date2Obj) {
+                date2Obj.setHours(23, 59, 59, 999);
+            }
+
+            // Set item date to start of day for comparison
+            const itemDateOnly = new Date(parsedItemDate);
+            itemDateOnly.setHours(0, 0, 0, 0);
+
+            if (date1Obj && date2Obj) {
+                // Date range filter
+                return itemDateOnly >= date1Obj && itemDateOnly <= new Date(date2Obj.getFullYear(), date2Obj.getMonth(), date2Obj.getDate());
+            } else if (date1Obj) {
+                // Single date filter (from date1)
+                return itemDateOnly >= date1Obj;
+            } else if (date2Obj) {
+                // Single date filter (to date2)
+                return itemDateOnly <= new Date(date2Obj.getFullYear(), date2Obj.getMonth(), date2Obj.getDate());
+            }
+            return true;
+        };
+
+        if (date1 || date2) {
+            console.log('Applying date filter...');
+            // Sample a few dates to see what we're working with
+            console.log('Sample dates from data:', filtered.slice(0, 5).map(item => ({ uid: item.uid, date: item.date, parsed: parseCustomDate(item.date) })));
+            
+            filtered = filtered.filter(item => filterByDate(item.date, date1, date2));
+            console.log('After date filter:', filtered.length);
+        }
+
+        setFilteredData(filtered);
+        console.log('Final filtered results:', filtered.length);
+        setCurrentPage(1);
+
+        // Reset the status field
+        if (statusRef.current) {
+            statusRef.current.value = '';
+        }
     };
-  
-    filtered = filtered.filter(item => filterByDate(item.date, date1, date2));
-  
-    setFilteredData(filtered);
-    console.log(filtered);
-    setCurrentPage(1);
-  
-    // Reset the status field
-    if (statusRef.current) {
-      statusRef.current.value = '';
-    }
-  };
   
 
   const indexOfLastItem = currentPage * itemsPerPage;
