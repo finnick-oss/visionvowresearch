@@ -215,6 +215,36 @@ const AdminDashboard = () => {
                 result = await index.search('', { hitsPerPage: 1000, page: 23 });
                 hits = hits.concat(result.hits);
 
+                
+                                // Fetch another 1000 results
+                result = await index.search('', { hitsPerPage: 1000, page: 24 });
+                hits = hits.concat(result.hits);
+
+                
+                                // Fetch another 1000 results
+                result = await index.search('', { hitsPerPage: 1000, page: 25 });
+                hits = hits.concat(result.hits);
+
+                
+                                // Fetch another 1000 results
+                result = await index.search('', { hitsPerPage: 1000, page: 26 });
+                hits = hits.concat(result.hits);
+
+
+                                // Fetch another 1000 results
+                result = await index.search('', { hitsPerPage: 1000, page: 27 });
+                hits = hits.concat(result.hits);
+
+                
+                                // Fetch another 1000 results
+                result = await index.search('', { hitsPerPage: 1000, page: 28});
+                hits = hits.concat(result.hits);
+
+                
+                                // Fetch another 1000 results
+                result = await index.search('', { hitsPerPage: 1000, page: 29 });
+                hits = hits.concat(result.hits);
+
                 setDataAlgolia(hits);
                 setFilteredData(hits);
 
