@@ -47,7 +47,8 @@ export const exportSurveys = async (params) => {
   for (let page = 1; ; page++) {
     const result = await request(`/api/surveys/export?${toQuery({ ...params, page })}`, { auth: true });
     items.push(...result.items);
-    if (result.items.length === 0 || items.length >= result.total) break;
+    // Older backends return everything at once with no total
+    if (result.total === undefined || result.items.length === 0 || items.length >= result.total) break;
   }
   return { items };
 };
