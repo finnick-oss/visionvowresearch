@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase'; // Adjust the path if necessary
 import { setDoc, doc } from 'firebase/firestore';
+import { saveSurvey } from '../api';
 import './Complete.css';
 
 const CompletedPage = ({ location }) => {
   const [ipAddress, setIPAddress] = useState('');
+  const [ipLookupDone, setIpLookupDone] = useState(false);
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchIPAddress = async () => {
       try {
-        const response = await fetch('https://api.ipify.org?format=json');
+        const response = await fetch('https://api.ipify.org?format=json', { signal: AbortSignal.timeout(5000) });
         const data = await response.json();
         setIPAddress(data.ip);
       } catch (error) {
+        // Blocked (ad blocker, network) or timed out: still save the hit without an IP
         console.log(error);
+      } finally {
+        setIpLookupDone(true);
       }
     };
 
@@ -46,7 +51,7 @@ const CompletedPage = ({ location }) => {
     const completionTime = formatDateTime(currentDate);
     const currentDateTime = currentDate.toISOString().replace(/:/g, '-'); // Replace colons to avoid issues in Firestore ID
 
-    if (pid && uid && ipAddress) {
+    if (pid && uid && ipLookupDone) {
       const newData = {
         pid,
         uid,
@@ -71,9 +76,19 @@ const CompletedPage = ({ location }) => {
         }
       };
 
+      const saveToMongo = async () => {
+        try {
+          const { id } = await saveSurvey(newData);
+          console.log('MongoDB document written with ID: ', id);
+        } catch (error) {
+          console.error('Error saving to MongoDB: ', error);
+        }
+      };
+
       saveToFirestore();
+      saveToMongo();
     }
-  }, [location.search, ipAddress]);
+  }, [location.search, ipAddress, ipLookupDone]);
 
   return (
     <div className="complete-page">

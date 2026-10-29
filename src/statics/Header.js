@@ -19,6 +19,7 @@ const Header = () => {
           <li><Link to="/" className="hover:text-blue-800">Home</Link></li>
           <li><Link to="/aboutus" className="hover:text-blue-800">About</Link></li>
           <li><Link to="/dashboard" className="hover:text-blue-800">Dashboard</Link></li>
+          <li><Link to="/dashboard2" className="hover:text-blue-800">Dashboard 2</Link></li>
           <li><Link to="/contactus" className="hover:text-blue-800">Contact Us</Link></li>
         </ul>
         <FaBars className="text-2xl text-gray-700 md:hidden" onClick={toggleMobileMenu} />
@@ -28,6 +29,7 @@ const Header = () => {
           <li><Link to="/" className="block text-gray-700 hover:text-blue-800">Home</Link></li>
           <li><Link to="/aboutus" className="block text-gray-700 hover:text-blue-800">About</Link></li>
           <li><Link to="/dashboard" className="block text-gray-700 hover:text-blue-800">Dashboard</Link></li>
+          <li><Link to="/dashboard2" className="block text-gray-700 hover:text-blue-800">Dashboard 2</Link></li>
           <li><Link to="/contactus" className="block text-gray-700 hover:text-blue-800">Contact Us</Link></li>
         </ul>
       )}
