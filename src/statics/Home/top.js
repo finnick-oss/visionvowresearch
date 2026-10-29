@@ -13,6 +13,7 @@ function Top() {
         <div className="flex items-center justify-center space-x-3 sm:flex-row sm:space-x-6">
           <Link to="/aboutus" className="px-5 py-2 text-base border border-gray-300 rounded-full sm:py-4 sm:text-xl sm:px-7 hover:bg-gray-200">About Us</Link>
           <Link to="/dashboard" className="px-5 py-2 text-base text-white bg-blue-800 rounded-full sm:py-4 sm:text-xl sm:px-7 hover:bg-blue-700">Dashboard</Link>
+          <Link to="/dashboard2" className="px-5 py-2 text-base text-white bg-blue-800 rounded-full sm:py-4 sm:text-xl sm:px-7 hover:bg-blue-700">Dashboard 2</Link>
         </div>
       </div>
     </div>

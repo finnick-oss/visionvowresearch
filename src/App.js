@@ -4,6 +4,7 @@ import Footer from './statics/Footer';
 import Home from './statics/Home';
 import AboutUs from './statics/AboutUs';
 import Dashboard from './statics/Dashboard';
+import Dashboard2 from './statics/Dashboard2';
 import ContactUs from './statics/ContactUs';
 import CompletedPage from './status/CompletedPage';
 import TerminatePage from './status/TerminatePage';
@@ -21,6 +22,7 @@ function App() {
             <Route path="/" exact component={Home} />714
             <Route path="/aboutus" component={AboutUs} />
             <Route path="/dashboard" component={Dashboard} />
+            <Route path="/dashboard2" component={Dashboard2} />
             <Route path="/contactus" component={ContactUs} />         
             <Route path="/admin" component={AdminDashboard} />
             <Route path="/redirect/complete" exact render={(props) => <CompletedPage {...props} />} />

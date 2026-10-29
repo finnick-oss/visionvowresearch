@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase'; // Adjust the path if necessary
 import { setDoc, doc } from 'firebase/firestore';
+import { saveSurvey } from '../api';
 import './Complete.css';
 
 const CompletedPage = ({ location }) => {
@@ -71,7 +72,17 @@ const CompletedPage = ({ location }) => {
         }
       };
 
+      const saveToMongo = async () => {
+        try {
+          const { id } = await saveSurvey(newData);
+          console.log('MongoDB document written with ID: ', id);
+        } catch (error) {
+          console.error('Error saving to MongoDB: ', error);
+        }
+      };
+
       saveToFirestore();
+      saveToMongo();
     }
   }, [location.search, ipAddress]);
 
