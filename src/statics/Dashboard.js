@@ -9,10 +9,12 @@ import './Dashboard.css';
 import algoliasearch from 'algoliasearch/lite';
 
 const client = algoliasearch('G8KZ33QU0S', 'd335cb9b3a2273f8123c95e161b35255');
+// eslint-disable-next-line no-unused-vars
 const index = client.initIndex('visionvowresearch-survey');
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [dataAlgolia, setDataAlgolia] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
