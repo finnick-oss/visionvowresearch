@@ -41,7 +41,16 @@ export const login = async (username, password) => {
 
 export const fetchSurveys = (params) => request(`/api/surveys?${toQuery(params)}`, { auth: true });
 export const fetchSurveyCount = () => request('/api/surveys/count', { auth: true });
-export const exportSurveys = (params) => request(`/api/surveys/export?${toQuery(params)}`, { auth: true });
+// Fetches every matching survey, one page at a time (the backend caps each response for Netlify)
+export const exportSurveys = async (params) => {
+  const items = [];
+  for (let page = 1; ; page++) {
+    const result = await request(`/api/surveys/export?${toQuery({ ...params, page })}`, { auth: true });
+    items.push(...result.items);
+    if (result.items.length === 0 || items.length >= result.total) break;
+  }
+  return { items };
+};
 export const saveSurvey = async (survey) => {
   if (!API_URL) return { id: null }; // backend not configured for this build
   return request('/api/surveys', { method: 'POST', body: survey });
